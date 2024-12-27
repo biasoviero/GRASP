@@ -144,7 +144,7 @@ def grasp(n: int, M: int, T: int, m: int, attractions: List[Dict[str, int]], ran
             print(f"Tempo decorrido: {elapsed_time:.2f} segundos")
 
     elapsed_time = time.time() - start_time
-    avg_dispersion /= i + 1
+    avg_dispersion /= i
 
     print("Instância:", file_path.split('/')[-1])  # Extract instance name from file path
     print(f"Valor da semente de aleatoriedade: {random_seed}")
