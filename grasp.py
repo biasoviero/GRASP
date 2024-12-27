@@ -89,7 +89,7 @@ def randomized_greedy_construction(solution: Solution, alpha: float):
 
 def local_search(initial_solution: Solution, max_depth: int, explored: set, alpha: float) -> Solution:
     improved = True
-    for _ in range(max_depth):
+    while True:
         if not improved:
             break
         improved = False
@@ -108,27 +108,32 @@ def local_search(initial_solution: Solution, max_depth: int, explored: set, alph
 
 def grasp(n: int, M: int, T: int, m: int, attractions: List[Dict[str, int]], random_seed: int, max_iterations: int, alpha: float, max_time: int, file_path: str):
     random.seed(random_seed)
-    best_solution = None
-    best_dispersion = float('inf')
     explored = set()
     start_time = time.time()
     stoppedByTime = False
 
-    for i in range(max_iterations):
+    initial_solution = Solution(n, M, attractions)
+    randomized_greedy_construction(initial_solution, alpha)
+    initial_dispersion = initial_solution.calculate_dispersion()
+    best_dispersion = initial_dispersion
+    best_solution = initial_solution
+    avg_dispersion = initial_dispersion
+
+    for i in range(max_iterations - 1):
         if time.time() - start_time > max_time:
             print('Tempo limite atingido. Encerrando')
             stoppedByTime = True
             break
 
-        initial_solution = Solution(n, M, attractions)
-        randomized_greedy_construction(initial_solution, alpha)
+        solution = Solution(n, M, attractions)
+        randomized_greedy_construction(solution, alpha)
+        dispersion = solution.calculate_dispersion()
+        avg_dispersion += dispersion
 
-        initial_dispersion = initial_solution.calculate_dispersion()
-
-        if initial_solution in explored:
+        if solution in explored:
             continue
 
-        local_solution = local_search(initial_solution, 100, explored, alpha)
+        local_solution = local_search(solution, 100, explored, alpha)
         dispersion = local_solution.calculate_dispersion()
 
         if dispersion < best_dispersion:
@@ -139,15 +144,16 @@ def grasp(n: int, M: int, T: int, m: int, attractions: List[Dict[str, int]], ran
             print(f"Tempo decorrido: {elapsed_time:.2f} segundos")
 
     elapsed_time = time.time() - start_time
+    avg_dispersion /= i + 1
 
     print("Instância:", file_path.split('/')[-1])  # Extract instance name from file path
     print(f"Valor da semente de aleatoriedade: {random_seed}")
-    print(f"Solução inicial da meta-heurística - Dispersão: {initial_dispersion}")
-    print(f"Melhor solução encontrada pela meta-heurística - Dispersão: {best_dispersion}")
-    print(f"Tempo de execução da meta-heurística (segundos): {elapsed_time:.2f} s")
-    print(f"Valor médio da solução encontrada pela formulação: {best_dispersion}")  # Assuming dispersion as the formulation solution value
-    print(f"Limite superior caso termine por limite de tempo: {best_dispersion if stoppedByTime else 'N/A'}")  # No upper bound if completed on time
-    print(f"Tempo médio de execução da formulação (segundos): {elapsed_time / max_iterations:.2f} s")  # Average execution time across iterations (if applicable)
+    print(f"Solução inicial da meta-heurística - Dispersão Si: {initial_dispersion}")
+    print(f"Melhor solução encontrada pela meta-heurística - Dispersão Sh: {best_dispersion}")
+    print(f"Tempo de execução da meta-heurística (segundos) H T (s).: {elapsed_time:.2f} s")
+    print(f"Valor médio da solução encontrada pela formulação Sf: {avg_dispersion}")  # Assuming dispersion as the formulation solution value
+    print(f"Limite superior caso termine por limite de tempo Uf: {best_dispersion if stoppedByTime else 'N/A'}")  # No upper bound if completed on time
+    print(f"Tempo médio de execução da formulação (segundos) F T (s): {elapsed_time / i:.2f} s")  # Average execution time across iterations (if applicable)
 
     return best_solution, best_dispersion
 
