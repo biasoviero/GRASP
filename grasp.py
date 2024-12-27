@@ -121,23 +121,23 @@ def grasp(n: int, M: int, T: int, m: int, attractions: List[Dict[str, int]], ran
     avg_dispersion = initial_dispersion
 
     for i in range(max_iterations - 1):
-        if time.time() - start_time > max_time:
+        solution = Solution(n, M, attractions)
+
+        if solution in explored:
+            continue
+        
+        randomized_greedy_construction(solution, alpha)
+        local_solution = local_search(solution, 100, explored, alpha)
+        elapsed_time = time.time() - start_time
+        dispersion = local_solution.calculate_dispersion()
+
+        if elapsed_time > max_time:
             print('Tempo limite atingido. Encerrando')
             stoppedByTime = True
             break
 
-        solution = Solution(n, M, attractions)
-        randomized_greedy_construction(solution, alpha)
-        dispersion = solution.calculate_dispersion()
-        avg_dispersion += dispersion
-
-        if solution in explored:
-            continue
-
-        local_solution = local_search(solution, 100, explored, alpha)
-        elapsed_time = time.time() - start_time
         avg_time += elapsed_time
-        dispersion = local_solution.calculate_dispersion()
+        avg_dispersion += dispersion
 
         if dispersion < best_dispersion:
             best_solution = local_solution
@@ -152,10 +152,11 @@ def grasp(n: int, M: int, T: int, m: int, attractions: List[Dict[str, int]], ran
     print(f"Valor da semente de aleatoriedade: {random_seed}")
     print(f"Solução inicial da meta-heurística - Dispersão Si: {initial_dispersion}")
     print(f"Melhor solução encontrada pela meta-heurística - Dispersão Sh: {best_dispersion}")
-    print(f"Tempo de execução da meta-heurística (segundos) H T (s).: {max_time if stoppedByTime else total_elapsed_time:.2f} s")
+    print(f"Tempo de execução da meta-heurística (segundos) H T (s).: {total_elapsed_time:.2f} s")
     print(f"Valor médio da solução encontrada pela formulação Sf: {avg_dispersion}")  # Assuming dispersion as the formulation solution value
     print(f"Limite superior caso termine por limite de tempo Uf: {best_dispersion if stoppedByTime else 'N/A'}")  # No upper bound if completed on time
     print(f"Tempo médio de execução da formulação (segundos) F T (s): {avg_time / (i + 1):.2f} s")  # Average execution time across iterations (if applicable)
+    print(f"Quantidade de iterações: {i + 1}")
 
     return best_solution, best_dispersion
 
