@@ -74,6 +74,7 @@ def randomized_greedy_construction(solution: Solution, alpha: float):
     random.shuffle(attractions_ids)
 
     for j in attractions_ids:
+        # candidato = (espaço i, similaridade temática, capacidade restante)
         candidates = [
             (i, 
              1 if any(attraction['tematica'] == solution.attractions[j]['tematica'] for attraction_id in solution.solution[i] for attraction in [solution.attractions[attraction_id]]) else 0, 
