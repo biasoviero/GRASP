@@ -88,7 +88,7 @@ def randomized_greedy_construction(solution: Solution, alpha: float):
         if selected:
             solution.assign_attraction(selected, j)
 
-def local_search(initial_solution: Solution, max_depth: int, explored: set, alpha: float) -> Solution:
+def local_search(initial_solution: Solution, explored: set) -> Solution:
     improved = True
     while True:
         if not improved:
@@ -128,7 +128,7 @@ def grasp(n: int, M: int, T: int, m: int, attractions: List[Dict[str, int]], ran
             continue
         
         randomized_greedy_construction(solution, alpha)
-        local_solution = local_search(solution, 100, explored, alpha)
+        local_solution = local_search(solution, explored)
         elapsed_time = time.time() - start_time
         dispersion = local_solution.calculate_dispersion()
 
