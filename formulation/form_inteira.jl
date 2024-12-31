@@ -111,7 +111,3 @@ end
 if abspath(PROGRAM_FILE) == @__FILE__
     main(ARGS)
 end
-
-# como executar: julia form_inteira.jl <file_path> <seed> <timeout>
-# exemplo:
-# julia form_inteira.jl 04.txt 10 5 

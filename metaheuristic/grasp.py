@@ -153,10 +153,10 @@ def grasp(n: int, M: int, T: int, m: int, attractions: List[Dict[str, int]], ran
     print(f"Valor da semente de aleatoriedade: {random_seed}")
     print(f"Solução inicial da meta-heurística - Dispersão Si: {initial_dispersion}")
     print(f"Melhor solução encontrada pela meta-heurística - Dispersão Sh: {best_dispersion}")
-    print(f"Tempo de execução da meta-heurística (segundos) H T (s).: {total_elapsed_time:.2f} s")
+    print(f"Tempo de execução da meta-heurística (segundos) H T (s).: {total_elapsed_time:.2f}")
     print(f"Valor médio da solução encontrada pela formulação Sf: {avg_dispersion}")  # Assuming dispersion as the formulation solution value
     print(f"Limite superior caso termine por limite de tempo Uf: {best_dispersion if stoppedByTime else 'N/A'}")  # No upper bound if completed on time
-    print(f"Tempo médio de execução da formulação (segundos) F T (s): {avg_time / (i + 1):.2f} s")  # Average execution time across iterations (if applicable)
+    print(f"Tempo médio de execução da formulação (segundos) F T (s): {avg_time / (i + 1):.2f}")  # Average execution time across iterations (if applicable)
     print(f"Quantidade de iterações: {i + 1}")
 
     return best_solution, best_dispersion
